@@ -14,3 +14,7 @@ input[type="text"] {
     box-shadow: 0 0 1px;
     border: 2px solid black;
 }
+
+#errorOutput {
+    color: red;
+}

@@ -1,7 +1,3 @@
-/*
-TODO Form validation using allowedValues
- */
-
 var cardValues = {
     "jo" : -5,
     "a" : 1,
@@ -18,12 +14,56 @@ var cardNames = {
     "k" : "King"
 };
 
-var allowedValues = [2, 3, 4, 5, 6, 7, 8, 9, 10, "ja", "q", "k", "a", "jo"];
+var allowedValues = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "ja", "q", "k", "a", "jo"];
 
-function countEm(cards, cardValues) {
+function validateCard(cards, errorOutput) {
     "use strict";
-    var scoreOutput = $("#scoreOutput");
-    scoreOutput.empty();
+    errorOutput.empty();
+    var emptyWarnings = 0;
+    var allowedWarnings = 0;
+    var jWarnings = 0;
+    for (var i = 0; i < cards.length; i++) {
+        console.log("validating: " + cards[i] + ", typeof: " + typeof cards[i]);
+        //Blank value or not enough cards entered
+        if ((cards.length <= 3) || (cards[i] === "")) {
+            if (emptyWarnings === 0) {
+                errorOutput.append(document.createTextNode("Blank values not allowed. Enter a card in all four fields."));
+                errorOutput.append(document.createElement("br"));
+            }
+            console.log("adding 1 to emptyWarnings");
+            emptyWarnings += 1;
+        }
+        if (allowedValues.indexOf(cards[i]) === -1) {
+            //Card not allowed
+            if (allowedWarnings === 0) {
+                errorOutput.append(document.createTextNode("Please enter only allowed card values: 2-10, Ja, Q, K, A, Jo"));
+                errorOutput.append(document.createElement("br"));
+            }
+            console.log("adding 1 to allowedWarnings");
+            allowedWarnings += 1;
+        }
+        if ((cards[i] === "j") || (cards[i] === "J")) {
+            if (jWarnings === 0) {
+                errorOutput.append(document.createTextNode("\"J\" is not a valid entry, did you mean \"Ja\" (Jack) or \"Jo\" (Joker)?"));
+                errorOutput.append(document.createElement("br"));
+            }
+            console.log("adding 1 to jWarnings");
+            jWarnings += 1;
+        }
+    }
+    console.log("Empty warnings: " + emptyWarnings);
+    console.log("Allowed warnings: " + allowedWarnings);
+    console.log("j warnings: " + jWarnings);
+
+    if ((emptyWarnings > 0) || (allowedWarnings > 0) || (jWarnings > 0)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function countEm(cards, scoreOutput) {
+    "use strict";
     var found = [];
     var pairs = {};
     for (var i = 0; i < cards.length; i++) {
@@ -67,7 +107,7 @@ function countEm(cards, cardValues) {
         } else {
             console.log("Found number card: " + found[j]);
             score += parseInt(found[j]);
-            scoreOutput.append(document.createTextNode("Plain number card " + found[j] + " worth " + parseInt(found[j]) + " points."));
+            scoreOutput.append(document.createTextNode("Plain number card worth " + parseInt(found[j]) + " points."));
             scoreOutput.append(document.createElement("br"));
         }
         console.log("score is " + score);
@@ -79,9 +119,6 @@ function countEm(cards, cardValues) {
             score += ((cardValues[key] * pairs[key]) * 2);
             scoreOutput.append(document.createTextNode("Pair of Jokers worth " + ((cardValues[key] * pairs[key]) * 2) + " points."));
             scoreOutput.append(document.createElement("br"));
-//        } else if (key === 'a') {
-//            console.log("found " + pairs[key] + " pair(s) of aces");
-//            score += ((cardValues[key] * pairs[key]) * 2);
         } else {
             score += 0;
             if (cardNames.hasOwnProperty(key)) {
@@ -102,16 +139,26 @@ function countEm(cards, cardValues) {
 
 $(document).ready(function() {
     "use strict";
+    var scoreOutput = $("#scoreOutput");
+    var errorOutput = $("#errorOutput");
+
     $("#target").click(function(event) {
-        event.preventDefault(); //prevent card fields from being cleard
+        event.preventDefault(); //Prevent card fields from being cleared on Get Score click
+
+        scoreOutput.empty();
+
         var cards = [];
         var card1 = $("#card1").val().trim().toLowerCase();
         var card2 = $("#card2").val().trim().toLowerCase();
         var card3 = $("#card3").val().trim().toLowerCase();
         var card4 = $("#card4").val().trim().toLowerCase();
-//        console.log(card1, card2, card3, card4);
         cards.push(card1, card2, card3, card4);
+        console.log(cards.length);
         console.log(cards);
-        countEm(cards, cardValues);
+
+        var valid = validateCard(cards, errorOutput);
+        if (valid === true) {
+            countEm(cards, scoreOutput);
+        }
     });
 });

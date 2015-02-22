@@ -10,25 +10,32 @@
 
 <p>
     Enter your cards in the boxes below.
-    <br>For numbers 2 through 10 enter the number.
-    <br>For face cards, enter: "A" for Ace, "K" for King, "Q" for Queen, "Ja" for Jack, "Jo" for Joker.
+    <br>For numbered cards, enter the number (2 through 10 allowed).
+    <br>For face cards, enter "A" for Ace, "K" for King, "Q" for Queen, "Ja" for Jack, "Jo" for Joker.
 </p>
 <p>
-    Numbered cards are worth their value. Goal is to get the lowest score.
+    Goal is to get the lowest score.
+    <br>Numbered cards are worth their value.
     <br>Ace: 1 point. King: 10 points. Queen: 10 points. Jack: 10 points. Joker: -5 points.
-    <br>Pairs "cancel out" to zero, except Joker pairs which are worth -10 points.
+    <br>Pairs cancel out to zero, except Joker pairs which are worth -10 points.
 </p>
 
-<form>
-    <input type="text" size="4" id="card1">
-    <input type="text" size="4" id="card2">
-    <input type="text" size="4" id="card3">
-    <input type="text" size="4" id="card4">
-    <p>
-        <button id="target">
-            Get Score!
-        </button>
-</form>
+<p id="errorOutput">
+</p>
+
+<label for="enterCards" id="enterCardsLabel">
+    Enter cards:
+    <form id="enterCards">
+        <input type="text" size="4" id="card1">
+        <input type="text" size="4" id="card2">
+        <input type="text" size="4" id="card3">
+        <input type="text" size="4" id="card4">
+        <p>
+            <button id="target">
+                Get Score!
+            </button>
+    </form>
+</label>
 
 <p id="scoreOutput">
 </p>
